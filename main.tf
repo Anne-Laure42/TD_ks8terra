@@ -101,6 +101,7 @@ resource "azurerm_public_ip" "anne_ks8_publicip" {
   allocation_method   = "Dynamic"
 }
 
+#Create 1 master
 resource "azurerm_linux_virtual_machine" "anne_terraformmaster_vm" {
    name                  = "anne_mastervm"
    location              = azurerm_resource_group.anne_terraform_rg.location
@@ -128,7 +129,8 @@ resource "azurerm_linux_virtual_machine" "anne_terraformmaster_vm" {
 
   depends_on = [azurerm_resource_group.anne_terraform_rg]
 }
- 
+
+#Create 2 workers
  resource "azurerm_linux_virtual_machine" "anne_terraformworker_vm" {
     count                 = 2
     name                  = "anne_worker${count.index}"
