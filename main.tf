@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "anne_terraform_rg" {
 
 #Create virtual network
 resource "azurerm_virtual_network" "anne_terraform_network" {
-   name                = "anne_ks8_vnet"
+   name                = "anne_k8s_vnet"
    address_space       = ["10.0.0.0/16"]
    location            = azurerm_resource_group.anne_terraform_rg.location
    resource_group_name = azurerm_resource_group.anne_terraform_rg.name
@@ -14,15 +14,15 @@ resource "azurerm_virtual_network" "anne_terraform_network" {
 
 #Create virtual subnet
  resource "azurerm_subnet" "anne_terraform_subnet" {
-   name                 = "anne_ks8_subnet"
+   name                 = "anne_k8s_subnet"
    resource_group_name  = azurerm_resource_group.anne_terraform_rg.name
    virtual_network_name = azurerm_virtual_network.anne_terraform_network.name
    address_prefixes     = ["10.0.2.0/24"]
  }
 
  # Create Network Security Group and rule
-resource "azurerm_network_security_group" "anne_ks8_nsg" {
-  name                = "anne_ks8_nsg"
+resource "azurerm_network_security_group" "anne_k8s_nsg" {
+  name                = "anne_k8s_nsg"
   location            = azurerm_resource_group.anne_terraform_rg.location
   resource_group_name = azurerm_resource_group.anne_terraform_rg.name
 
@@ -77,25 +77,25 @@ resource "azurerm_network_security_group" "anne_ks8_nsg" {
   }
 
  #Create Private Network Interfaces
-resource "azurerm_network_interface" "anne_ks8_ni" {
+resource "azurerm_network_interface" "anne_k8s_ni" {
   count               = 3
-  name                = "anne_ks8_ni-${count.index}"
+  name                = "anne_k8s_ni-${count.index}"
   location            = azurerm_resource_group.anne_terraform_rg.location
   resource_group_name = azurerm_resource_group.anne_terraform_rg.name
 
   ip_configuration {
-    name                          = "anne_ks8_ipconfig"
+    name                          = "anne_k8s_ipconfig"
     subnet_id                     = azurerm_subnet.anne_terraform_subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = azurerm_public_ip.anne_ks8_publicip["${count.index}"].id
+    public_ip_address_id          = azurerm_public_ip.anne_k8s_publicip["${count.index}"].id
    }
    depends_on = [azurerm_resource_group.anne_terraform_rg]
  }
 
 # Create public IPs
-resource "azurerm_public_ip" "anne_ks8_publicip" {
+resource "azurerm_public_ip" "anne_k8s_publicip" {
   count               = 3
-  name                = "anne_ks8_public_ip-${count.index}"
+  name                = "anne_k8s_public_ip-${count.index}"
   location            = azurerm_resource_group.anne_terraform_rg.location
   resource_group_name = azurerm_resource_group.anne_terraform_rg.name
   allocation_method   = "Dynamic"
@@ -112,7 +112,7 @@ resource "azurerm_linux_virtual_machine" "anne_terraformmaster_vm" {
    admin_password                  = "kingpin42330@" 
    disable_password_authentication = false   
    network_interface_ids = [
-     azurerm_network_interface.anne_ks8_ni["${2}"].id
+     azurerm_network_interface.anne_k8s_ni["${2}"].id
      ]
 
    os_disk {
@@ -142,7 +142,7 @@ resource "azurerm_linux_virtual_machine" "anne_terraformmaster_vm" {
     admin_password                  = "kingpin42330@" 
     disable_password_authentication = false 
     network_interface_ids = [
-     azurerm_network_interface.anne_ks8_ni["${count.index}"].id
+     azurerm_network_interface.anne_k8s_ni["${count.index}"].id
     ]
 
     source_image_reference  {
