@@ -137,7 +137,7 @@ resource "azurerm_linux_virtual_machine" "anne_terraformmaster_vm" {
     location              = azurerm_resource_group.anne_terraform_rg.location
     resource_group_name   = azurerm_resource_group.anne_terraform_rg.name
     size                  = "Standard_D2ds_v4"
-    computer_name                   = "kub-manager" 
+    computer_name                   = "kub-worker" 
     admin_username                  = "azureuser"
     admin_password                  = "kingpin42330@" 
     disable_password_authentication = false 
