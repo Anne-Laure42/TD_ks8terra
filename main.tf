@@ -1,6 +1,6 @@
 #Create resource group
 resource "azurerm_resource_group" "anne_terraform_rg" {
-   name = "anne-ks8terra-rg"
+   name = "anne-k8sterra-rg"
   location = var.location
 }
 
